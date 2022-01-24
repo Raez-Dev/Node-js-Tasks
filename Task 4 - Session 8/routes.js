@@ -1,5 +1,6 @@
 // Import
 const express = require('express');
+const { body, validationResult, checkSchema } = require('express-validator');
 const { Router } = express;
 const Productos = require('./Productos');
 
@@ -24,14 +25,50 @@ routerProductos.get('/:id', async(req, res) => {
     res.json(await _Productos.getById(parseInt(id)));
 })
 
-routerProductos.post('/', async(req, res) => {
-    res.json(await _Productos.save(req.body));
-})
+routerProductos.post('/',
+    checkSchema({
+        title: {
+            isString: true,
+        },
+        price: {
+            isFloat: true,
+            toFloat: true
+        },
+        thumbnail: {
+            isString: true
+        },
+    }),
+    async(req, res) => {
 
-routerProductos.put('/:id', async(req, res) => {
-    const { id } = req.params;
-    res.json(await _Productos.update({...req.body, id: parseInt(id) }));
-})
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        res.json(await _Productos.save(req.body));
+    })
+
+routerProductos.put('/:id',
+    checkSchema({
+        title: {
+            isString: true,
+        },
+        price: {
+            isFloat: true,
+            toFloat: true
+        },
+        thumbnail: {
+            isString: true
+        },
+    }), async(req, res) => {
+        const { id } = req.params;
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        res.json(await _Productos.update({...req.body, id: parseInt(id) }));
+
+    })
 
 routerProductos.delete('/:id', async(req, res) => {
     const { id } = req.params

@@ -1,14 +1,22 @@
 // Import
+const { resolve } = require('dns');
 const express = require('express');
 const { engine } = require('express-handlebars');
+const { Server: HttpServer } = require('http')
+const { Server: IOServer } = require('socket.io')
 const Productos = require('./controllers/Productos');
+const Mensajes = require("./controllers/Mensajes");
+let mensajes = new Mensajes('mensajes.txt');
 
 //  Constants
 const _Productos = new Productos()
 const app = express();
-const PORT = 8000;
+const PORT = 3000;
+const httpServer = new HttpServer(app)
+const io = new IOServer(httpServer)
 
 //  Config Middleware
+app.use(express.static('./public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -44,9 +52,31 @@ app.post('/new',
         } else {
             res.json(response);
         }
+    });
+
+// El servidor funcionando en el puerto 3000
+httpServer.listen(PORT, () => {
+    console.log(`App is running in http://localhost:${PORT}`);
+})
+
+// Socket.Io Methods
+io.on('connection', async(socket) => {
+
+    console.log(`Nueva coneccion ${socket.id}`);
+    let response = await _Productos.getAll();
+    let responseMensaje = await mensajes.getAll();
+    socket.emit('propagacionProductos', response.data);
+    socket.emit('recibirMensaje', responseMensaje);
+
+    socket.on('nuevoProducto', async(producto) => {
+        await _Productos.save(producto);
+        let response = await _Productos.getAll();
+        io.sockets.emit('propagacionProductos', response.data)
     })
 
-//  PORT Config
-app.listen(PORT, () => {
-    console.log(`App is running in http://localhost:${PORT}`);
+    socket.on('enviarMensaje', async(mensaje) => {
+        await mensajes.save(mensaje);
+        let lstMensaje = await mensajes.getAll();
+        io.sockets.emit('recibirMensaje', lstMensaje);
+    })
 })

@@ -1,23 +1,11 @@
 let listaProductos = [];
 
+const { saveMaria, getAllMaria } = require('../config/MariaDB/MariaDBServices.js');
+
 class Productos {
 
     save = async(item) => {
-
-        if (listaProductos.length === 0) {
-
-            let producto = {...item, "id": 1 };
-            listaProductos.push(producto);
-            return { IsSuccess: true, data: producto };
-
-        } else {
-
-            let ids = listaProductos.map((item) => item.id)
-            let newId = Math.max(...ids) + 1;
-            listaProductos.push({...item, "id": newId });
-            return { IsSuccess: true, data: {...item, "id": newId } };
-
-        }
+        return await saveMaria(item);
     }
 
     update = async(updProducto) => {
@@ -60,15 +48,16 @@ class Productos {
 
     getAll = async() => {
 
-        if (listaProductos.length !== 0) {
+        return await getAllMaria();
+        // if (listaProductos.length !== 0) {
 
-            return { IsSuccess: true, data: listaProductos };
+        //     return { IsSuccess: true, data: listaProductos };
 
-        } else {
+        // } else {
 
-            return { IsSuccess: false, msg: "Empty list" };
+        //     return { IsSuccess: false, msg: "Empty list" };
 
-        }
+        // }
     }
 
     deleteById = async(idToDelete) => {

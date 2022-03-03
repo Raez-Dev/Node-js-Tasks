@@ -4,6 +4,8 @@
     "description": "Handlebars",
     "main": "index.js",
     "scripts": {
+        "buildTableMariaDB": "node ./config/MariaDB/create_table.js",
+        "buildTableSqLite": "node ./config/SqLite/create_table.js",
         "dev": "nodemon index.js",
         "start": "node index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +15,10 @@
     "dependencies": {
         "express": "^4.17.3",
         "express-handlebars": "^6.0.2",
-        "nodemon": "^2.0.15"
+        "knex": "0.95.15",
+        "mysql": "^2.18.1",
+        "nodemon": "^2.0.15",
+        "socket.io": "^4.4.1",
+        "sqlite3": "^5.0.2"
     }
 }

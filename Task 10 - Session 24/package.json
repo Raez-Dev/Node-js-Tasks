@@ -1,0 +1,31 @@
+{
+    "name": "log_in_formulario",
+    "version": "1.0.0",
+    "description": "Log-in por formulario",
+    "main": "index.js",
+    "scripts": {
+        "buildTableMariaDB": "node ./config/MariaDB/create_table.js",
+        "buildTableSqLite": "node ./config/SqLite/create_table.js",
+        "dev": "nodemon index.js",
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Carlos Raez",
+    "license": "ISC",
+    "dependencies": {
+        "@faker-js/faker": "^6.2.0",
+        "connect-mongo": "^4.6.0",
+        "cookie-parser": "^1.4.6",
+        "dotenv": "^16.0.1",
+        "express": "^4.17.3",
+        "express-handlebars": "^6.0.2",
+        "express-session": "^1.17.3",
+        "faker-js": "^1.0.0",
+        "knex": "0.95.15",
+        "mysql": "^2.18.1",
+        "nodemon": "^2.0.15",
+        "normalizr": "^3.6.2",
+        "socket.io": "^4.4.1",
+        "sqlite3": "^5.0.2"
+    }
+}
